@@ -1,5 +1,5 @@
 xquery version '3.0' ;
-module namespace test.globals = 'test.globals' ;
+module namespace lgcha.globals = 'lgcha.globals' ;
 
 (:~
  : This module is a Config file for a synopsx starter project
@@ -18,4 +18,4 @@ module namespace test.globals = 'test.globals' ;
 
 
  (: declare variable $gdp.globals:root := 'http://guidesdeparis.net' ; :)
- declare variable $test.globals:root := 'http://localhost:8984' ;
+ declare variable $lgcha.globals:root := 'http://localhost:8984' ;

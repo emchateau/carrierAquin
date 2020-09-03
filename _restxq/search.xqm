@@ -1,5 +1,5 @@
 xquery version "3.0" ;
-module namespace test.search = 'test.search' ;
+module namespace lgcha.search = 'lgcha.search' ;
 
 (:~
  : This module is a rest for Paris' guidebooks electronic edition
@@ -23,12 +23,12 @@ import module namespace rest = 'http://exquery.org/ns/restxq';
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
 import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
 
-import module namespace test.models.tei = "test.models.tei" at '../models/tei.xqm' ;
+import module namespace lgcha.models.tei = "lgcha.models.tei" at '../models/tei.xqm' ;
 
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../mappings/htmlWrapping.xqm' ;
-import module namespace test.mappings.jsoner = 'test.mappings.jsoner' at '../mappings/jsoner.xqm' ;
+import module namespace lgcha.mappings.jsoner = 'lgcha.mappings.jsoner' at '../mappings/jsoner.xqm' ;
 
-declare default function namespace 'test.search' ;
+declare default function namespace 'lgcha.search' ;
 
 
 
@@ -80,8 +80,8 @@ function getSearchJson(
     ) {
   let $function := 'getSearch'
   let $queryParams := map {
-    'project' : 'test',
-    'dbName' : 'test',
+    'project' : 'lgcha',
+    'dbName' : 'lgcha',
     'model' : 'tei', 
     'function' : $function,
     'search' : $search,
@@ -101,7 +101,7 @@ function getSearchJson(
   let $outputParams := map {
     'xquery' : 'tei2html'
     }
-    return test.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+    return lgcha.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -114,5 +114,5 @@ declare
   %updating
 function indexing() {
   let $indexId := ('gdpIndexNominum', 'gdpIndexLocorum')
-  for $index in $indexId return test.models.tei:addId2IndexedEntities($index)
+  for $index in $indexId return lgcha.models.tei:addId2IndexedEntities($index)
 };

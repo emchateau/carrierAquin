@@ -1,5 +1,5 @@
 xquery version '3.0' ;
-module namespace test.mappings.jsoner = 'test.mappings.jsoner' ;
+module namespace lgcha.mappings.jsoner = 'lgcha.mappings.jsoner' ;
 
 (:~
  : This module is an JSON mapping for templating
@@ -33,7 +33,7 @@ import module namespace synopsx.mappings.tei2html = 'synopsx.mappings.tei2html' 
 
 declare namespace html = 'http://www.w3.org/1999/xhtml' ;
 
-declare default function namespace 'test.mappings.jsoner' ;
+declare default function namespace 'lgcha.mappings.jsoner' ;
 
 (:~
  : this function wrap the content in an HTML layout
