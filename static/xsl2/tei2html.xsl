@@ -280,7 +280,7 @@
 			<xsl:apply-templates select="node()|@*" mode="#current"/>
 		</xsl:copy>
 	</xsl:template>-->
-	<!-- normalisation des espaces (http://wiki.tei-c.org/index.php/XML_Whitespace) -->
+	<!-- normalisation des espaces (http://wiki.tei-c.org/indlgcha.php/XML_Whitespace) -->
 	<xsl:template match="text()">
 		<xsl:choose>
 			<xsl:when

@@ -1,5 +1,5 @@
 xquery version '3.0' ;
-module namespace test.static = 'test.static' ;
+module namespace lgcha.static = 'lgcha.static' ;
 
 (:~
  : This module is a rest for Paris' guidebooks blog
@@ -20,7 +20,7 @@ module namespace test.static = 'test.static' ;
 import module namespace rest = 'http://exquery.org/ns/restxq';
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
 
-declare default function namespace 'test.static' ;
+declare default function namespace 'lgcha.static' ;
 
 (:~
 : resource function for the static files

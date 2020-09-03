@@ -1,5 +1,5 @@
 xquery version "3.0" ;
-module namespace test.edition = 'test.edition' ;
+module namespace lgcha.edition = 'lgcha.edition' ;
 
 (:~
  : This module is a rest file for a synopsx starter project
@@ -7,6 +7,7 @@ module namespace test.edition = 'test.edition' ;
  : @version 1.0
  : @date 2020-09
  : @since 2020-09
+ : @author OlivierDufault (Université de Montréal)
  : @author emchateau (Université de Montréal)
  :
  : This module uses SynopsX publication framework
@@ -21,18 +22,18 @@ import module namespace rest = 'http://exquery.org/ns/restxq';
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
 import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
 
-import module namespace test.models.tei = "test.models.tei" at '../models/tei.xqm' ;
+import module namespace lgcha.models.tei = "lgcha.models.tei" at '../models/tei.xqm' ;
 
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../mappings/htmlWrapping.xqm' ;
-import module namespace test.mappings.jsoner = 'test.mappings.jsoner' at '../mappings/jsoner.xqm' ;
+import module namespace lgcha.mappings.jsoner = 'lgcha.mappings.jsoner' at '../mappings/jsoner.xqm' ;
 
-declare default function namespace 'test.edition' ;
+declare default function namespace 'lgcha.edition' ;
 
 (:~
  : this resource function redirect to /home
  :)
 declare 
-  %rest:path('/test')
+  %rest:path('/lgcha')
 function index() {
   <rest:response>
     <http:response status="303" message="See Other">
@@ -47,14 +48,14 @@ function index() {
  : @return an html home page for the edition
  :)
 declare
-  %rest:path('/test/home')
+  %rest:path('/lgcha/home')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
 function editionHome() {
   let $queryParams := map {
-    'project' : 'test',
-    'dbName' : 'test',
+    'project' : 'lgcha',
+    'dbName' : 'lgcha',
     'model' : 'tei',
     'function' : 'getCorpusList'
     }
@@ -75,14 +76,14 @@ function editionHome() {
  : @return an html representation of the corpus resource
  :)
 declare
-  %rest:path('/test/corpus')
+  %rest:path('/lgcha/corpus')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
 function corpus() {
   let $queryParams := map {
-    'project' : 'test',
-    'dbName' : 'test',
+    'project' : 'lgcha',
+    'dbName' : 'lgcha',
     'model' : 'tei',
     'function' : 'getCorpusList'
     }
@@ -109,8 +110,8 @@ declare
   %output:json("indent=no, escape=yes")
 function corpusJson() {
   let $queryParams := map {
-    'project' : 'test',
-    'dbName' : 'test',
+    'project' : 'lgcha',
+    'dbName' : 'lgcha',
     'model' : 'tei',
     'function' : 'getCorpusList'
     }
@@ -119,7 +120,7 @@ function corpusJson() {
   let $outputParams := map {
     'xquery' : 'tei2html'
     }
-  return test.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+  return lgcha.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };:)
 
 (:~
@@ -129,15 +130,15 @@ function corpusJson() {
  : @return an html representation of the corpus resource
  :)
 declare
-  %rest:path('/test/corpus/{$corpusId}')
+  %rest:path('/lgcha/corpus/{$corpusId}')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
 function corpusItem($corpusId as xs:string) {
   let $queryParams := map {
     'corpusId' : $corpusId,
-    'project' : 'test',
-    'dbName' : 'test',
+    'project' : 'lgcha',
+    'dbName' : 'lgcha',
     'model' : 'tei',
     'function' : 'getCorpusById'
     }
@@ -158,15 +159,15 @@ function corpusItem($corpusId as xs:string) {
  : @return an html representation of the text resource
  :)
 declare
-  %rest:path('/test/texts/{$textId}')
+  %rest:path('/lgcha/texts/{$textId}')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
 function textItems($textId as xs:string) {
   let $queryParams := map {
     'textId' : $textId,
-    'project' : 'test',
-    'dbName' : 'test',
+    'project' : 'lgcha',
+    'dbName' : 'lgcha',
     'model' : 'tei',
     'function' : 'getTextById'
     }
@@ -187,15 +188,15 @@ function textItems($textId as xs:string) {
  : @return a json toc of the text
  :)
 declare
-  %rest:path('/test/texts/{$textId}/toc')
+  %rest:path('/lgcha/texts/{$textId}/toc')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
 function textItemsTocJson($textId as xs:string) {
   let $queryParams := map {
     'textId' : $textId,
-    'project' : 'test',
-    'dbName' : 'test',
+    'project' : 'lgcha',
+    'dbName' : 'lgcha',
     'model' : 'tei',
     'function' : 'getTocByTextId'
     }
@@ -204,7 +205,7 @@ function textItemsTocJson($textId as xs:string) {
   let $outputParams := map {
     'xquery' : 'tei2html'
     }
-  return test.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+  return lgcha.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -214,15 +215,15 @@ function textItemsTocJson($textId as xs:string) {
  : @return a json toc of the text
  :)
 declare
-  %rest:path('/test/texts/{$textId}/pagination')
+  %rest:path('/lgcha/texts/{$textId}/pagination')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
 function textItemsPaginationJson($textId as xs:string) {
   let $queryParams := map {
     'textId' : $textId,
-    'project' : 'test',
-    'dbName' : 'test',
+    'project' : 'lgcha',
+    'dbName' : 'lgcha',
     'model' : 'tei',
     'function' : 'getPaginationByTextId'
     }
@@ -231,7 +232,7 @@ function textItemsPaginationJson($textId as xs:string) {
   let $outputParams := map {
     'xquery' : 'tei2html'
     }
-  return test.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+  return lgcha.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -241,7 +242,7 @@ function textItemsPaginationJson($textId as xs:string) {
  : @return an html representation of the text item
  :)
 declare
-  %rest:path('/test/items/{$itemId}')
+  %rest:path('/lgcha/items/{$itemId}')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
@@ -249,8 +250,8 @@ function items($itemId as xs:string) {
   let $queryParams := map {
 
     'itemId' : $itemId,
-    'project' : 'test',
-    'dbName' : 'test',
+    'project' : 'lgcha',
+    'dbName' : 'lgcha',
     'model' : 'tei',
     'function' : 'getItemById'
     }
@@ -271,14 +272,14 @@ function items($itemId as xs:string) {
  : @todo use this tag !
  :)
 declare
-  %rest:path('/test/model')
+  %rest:path('/lgcha/model')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
 function model() {
   let $queryParams := map {
-    'project' :'test',
-    'dbName' : 'test',
+    'project' :'lgcha',
+    'dbName' : 'lgcha',
     'path' : '/schema/gdpSchemaTEI.odd.xml',
     'model' : 'tei',
     'function' : 'getModel'
@@ -300,13 +301,13 @@ function model() {
  : @todo use this tag !
  :)
 declare
-  %rest:path('/test/about')
+  %rest:path('/lgcha/about')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
 function about() {
   let $queryParams := map {
-    'project' :'test',
+    'project' :'lgcha',
     'dbName' : 'blog',
     'model' : 'tei',
     'function' : 'getBlogItem',
@@ -328,14 +329,14 @@ function about() {
  : @return an html list of indexes
  :)
 declare
-  %rest:path('/test/index')
+  %rest:path('/lgcha/index')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
 function indexes() {
   let $queryParams := map {
-    'project' : 'test',
-    'dbName' : 'test',
+    'project' : 'lgcha',
+    'dbName' : 'lgcha',
     'model' : 'tei',
     'function' : 'getIndexList'
     }
@@ -355,7 +356,7 @@ function indexes() {
  : @return an html list of indexLocorum entries
  :)
 declare
-  %rest:path('/test/indexLocorum')
+  %rest:path('/lgcha/indexLocorum')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
@@ -368,8 +369,8 @@ function indexLocorum(
   $text as xs:string*
   ) {
   let $queryParams := map {
-    'project' : 'test',
-    'dbName' : 'test',
+    'project' : 'lgcha',
+    'dbName' : 'lgcha',
     'model' : 'tei',
     'function' : 'getIndexLocorum',
     'start' : $start,
@@ -393,14 +394,14 @@ function indexLocorum(
  : @return an html representation of an indexLocorum item
  :)
 declare
-  %rest:path('/test/indexLocorum/{$itemId}')
+  %rest:path('/lgcha/indexLocorum/{$itemId}')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
 function indexLocorumItem($itemId) {
   let $queryParams := map {
-    'project' : 'test',
-    'dbName' : 'test',
+    'project' : 'lgcha',
+    'dbName' : 'lgcha',
     'model' : 'tei',
     'function' : 'getIndexLocorumItem',
     'itemId' : $itemId
@@ -421,7 +422,7 @@ function indexLocorumItem($itemId) {
  : @return a html list of indexNominum entries
  :)
 declare
-  %rest:path('/test/indexNominum')
+  %rest:path('/lgcha/indexNominum')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
@@ -436,8 +437,8 @@ function indexNominum(
   $letter as xs:string
   ) {
   let $queryParams := map {
-    'project' : 'test',
-    'dbName' : 'test',
+    'project' : 'lgcha',
+    'dbName' : 'lgcha',
     'model' : 'tei',
     'function' : 'getIndexNominum',
     'start' : $start,
@@ -462,14 +463,14 @@ function indexNominum(
  : @return an html representation of an indexNominum item
  :)
 declare
-  %rest:path('/test/indexNominum/{$itemId}')
+  %rest:path('/lgcha/indexNominum/{$itemId}')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
 function indexNominumItem($itemId) {
   let $queryParams := map {
-    'project' : 'test',
-    'dbName' : 'test',
+    'project' : 'lgcha',
+    'dbName' : 'lgcha',
     'model' : 'tei', 
     'function' : 'getIndexNominumItem',
     'itemId' : $itemId

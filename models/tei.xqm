@@ -1,5 +1,5 @@
 xquery version "3.1" ;
-module namespace test.models.tei = 'test.models.tei' ;
+module namespace lgcha.models.tei = 'lgcha.models.tei' ;
 
 (:~
  : This module is a TEI models library for a synopsx starter project
@@ -18,13 +18,13 @@ module namespace test.models.tei = 'test.models.tei' ;
 
 import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
 
-import module 'test.models.tei' at 'teiContent.xqm' , 'teiBuilder.xqm' ;
+import module 'lgcha.models.tei' at 'teiContent.xqm' , 'teiBuilder.xqm' ;
 
-import module namespace test.globals = 'test.globals' at '../globals.xqm' ;
+import module namespace lgcha.globals = 'lgcha.globals' at '../globals.xqm' ;
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
-declare default function namespace 'test.models.tei' ;
+declare default function namespace 'lgcha.models.tei' ;
 
 (:~
  : ~:~:~:~:~:~:~:~:~
@@ -60,7 +60,7 @@ declare function getBlogPosts($queryParams as map(*)) as map(*) {
     'abstract' : getAbstract($post, $lang),
     'uuid' : $uuid,
     'path' : '/blog/posts/',
-    'url' : $test.globals:root || '/blog/posts/' || $uuid
+    'url' : $lgcha.globals:root || '/blog/posts/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -101,7 +101,7 @@ declare function getBlogItem($queryParams as map(*)) {
     'tei' : $article//tei:text/*,
     'uuid' : $uuid,
     'path' : '/blog/posts/',
-    'url' : $test.globals:root || '/blog/posts/' || $uuid,
+    'url' : $lgcha.globals:root || '/blog/posts/' || $uuid,
     'itemBeforeTitle' : getTitles($getBlogItemBefore, $lang),
     'itemBeforeUrl' : getUrl($getBlogItemBefore//tei:sourceDesc/@xml:id, '/blog/posts/', $lang),
     'itemBeforeUuid' : $getBlogItemBefore//tei:sourceDesc/@xml:id,
@@ -150,7 +150,7 @@ declare function getAbout($queryParams as map(*)) as map(*) {
     'abstract' : getAbstract($item, $lang),
     'uuid' : $uuid,
     'path' : '/about/',
-    'url' : $test.globals:root || '/' || $uuid,
+    'url' : $lgcha.globals:root || '/' || $uuid,
     'tei' : $item
     }
   return  map{
@@ -191,7 +191,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'textsQuantity' : getQuantity($corpus/tei:TEI, 'texte disponible', 'textes disponibles'),
     'uuid' : $uuid,
     'path' : '/corpus/',
-    'url' : $test.globals:root || '/corpus/' || $uuid,
+    'url' : $lgcha.globals:root || '/corpus/' || $uuid,
     (:'editions' : getOtherEditions(getRef($corpus)),:)
     'weight' : getStringLength($corpus)
     }
@@ -235,7 +235,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
     'weight' : getStringLength($text),
     'uuid' : $uuid,
     'path' : '/texts/',
-    'url' : $test.globals:root || '/texts/' || $uuid,
+    'url' : $lgcha.globals:root || '/texts/' || $uuid,
     'otherEditions' : fn:count(getOtherEditions(getRef($text))/tei:biblStruct) (: todo value and unit :)
     }
   return  map{
@@ -280,7 +280,7 @@ declare function getTextItemsById($queryParams as map(*)) as map(*) {
     'tei' : $item,
     'path' : '/items/',
     'uuid' : $uuid,
-    'url' : $test.globals:root || '/items/' || $uuid
+    'url' : $lgcha.globals:root || '/items/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -320,7 +320,7 @@ declare function getTextById($queryParams as map(*)) as map(*) {
     'tei' : $item,
     'path' : '/items/',
     'uuid' : $uuid,
-    'url' : $test.globals:root || '/items/' || $uuid
+    'url' : $lgcha.globals:root || '/items/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -449,7 +449,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'tei' : $tei,
     'path' : '/items/',
     'uuid' : $uuid,
-    'url' : $test.globals:root || '/items/' || $uuid,
+    'url' : $lgcha.globals:root || '/items/' || $uuid,
     'itemBeforeTitle' : getSectionTitle($itemBefore), (: is a sequence :)
     'itemBeforeUrl' : getUrl($itemBefore/@xml:id, '/items/', $lang),
     'itemBeforeUuid' : $itemBefore/@xml:id,
@@ -517,7 +517,7 @@ declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
     'copyright' : getCopyright($bibliography, $lang),
     'description' : 'Liste des œuvres de la bibliographie des Guides de Paris, au sens des FRBR',
     'keywords' : array{getKeywords($bibliography, $lang)},
-    'url' : $test.globals:root || '/bibliography/works'
+    'url' : $lgcha.globals:root || '/bibliography/works'
     }
   let $content := 
     for $bibliographicalWork in $bibliographicalWorks 
@@ -531,7 +531,7 @@ declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
     'manifestations' : getBiblManifestations($bibliographicalWork, $lang),
     'uuid' : $uuid,
     'path' : '/bibliography/works/',
-    'url' : $test.globals:root || '/bibliography/works/' || $uuid
+    'url' : $lgcha.globals:root || '/bibliography/works/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -570,7 +570,7 @@ declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
     'tei' : $bibliographicalWork,
     'uuid' : $uuid,
     'path' : '/bibliography/works/',
-    'url' : $test.globals:root || '/bibliography/works/' || $uuid
+    'url' : $lgcha.globals:root || '/bibliography/works/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -597,7 +597,7 @@ declare function getBibliographicalExpressionsList($queryParams) {
     'copyright' : getCopyright($bibliography, $lang),
     'description' : 'Liste des expressions de la bibliographie des Guides de Paris, au sens des FRBR',
     'keywords' : array{getKeywords($bibliography, $lang)},
-    'url' : $test.globals:root || '/bibliography/expressions'
+    'url' : $lgcha.globals:root || '/bibliography/lgchapressions'
     }
   let $content := 
     for $bibliographicalExpression in $bibliographicalExpressions 
@@ -610,8 +610,8 @@ declare function getBibliographicalExpressionsList($queryParams) {
     'notes' : array{},
     'tei' : $bibliographicalExpression,
     'uuid' : $uuid,
-    'path' : '/bibliography/expressions/',
-    'url' : $test.globals:root || '/bibliography/expressions/' || $uuid
+    'path' : '/bibliography/lgchapressions/',
+    'url' : $lgcha.globals:root || '/bibliography/lgchapressions/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -636,7 +636,7 @@ declare function getBibliographicalExpression($queryParams) {
     'copyright' : getCopyright($bibliography, $lang),
     'description' : $bibliographicalExpression,
     'keywords' : array{getKeywords($bibliography, $lang)},
-    'url' : getUrl($bibliographicalExpression/@xml:id, '/bibliography/expressions/', $lang) 
+    'url' : getUrl($bibliographicalExpression/@xml:id, '/bibliography/lgchapressions/', $lang)
     }
   let $uuid := $bibliographicalExpression/@xml:id
   let $content := map {
@@ -649,8 +649,8 @@ declare function getBibliographicalExpression($queryParams) {
       },
     'tei' : $bibliographicalExpression,
     'uuid' : $uuid,
-    'path' : '/bibliography/expressions/',
-    'url' : $test.globals:root || '/bibliography/expressions/' || $uuid
+    'path' : '/bibliography/lgchapressions/',
+    'url' : $lgcha.globals:root || '/bibliography/lgchapressions/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -676,7 +676,7 @@ declare function getBibliographicalManifestationsList($queryParams) {
     'copyright' : getCopyright($bibliography, $lang),
     'description' : 'Liste des manifestations de la bibliographie des Guides de Paris, au sens des FRBR',
     'keywords' : array{getKeywords($bibliography, $lang)},
-    'url' : $test.globals:root || '/bibliography/manifestations'
+    'url' : $lgcha.globals:root || '/bibliography/manifestations'
     }
   let $content := 
     for $bibliographicalManifestation in $bibliographicalManifestations 
@@ -689,7 +689,7 @@ declare function getBibliographicalManifestationsList($queryParams) {
     'tei' : $bibliographicalManifestation,
     'uuid' : $uuid,
     'path' : '/bibliography/manifestations/',
-    'url' : $test.globals:root || '/bibliography/manifestations/' || $uuid
+    'url' : $lgcha.globals:root || '/bibliography/manifestations/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -736,7 +736,7 @@ declare function getBibliographicalManifestation($queryParams) {
     'notes' : array{$bibliographicalManifestation/tei:note},
     'uuid' : $uuid,
     'path' : '/bibliography/manifestations/',
-    'url' : $test.globals:root || '/bibliography/manifestations/' || $uuid
+    'url' : $lgcha.globals:root || '/bibliography/manifestations/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -762,7 +762,7 @@ declare function getBibliographicalItemsList($queryParams as map(*)) as map(*) {
     'copyright' : getCopyright($bibliography, $lang),
     'description' : getDescription($bibliography, $lang),
     'keywords' : array{getKeywords($bibliography, $lang)},
-    'url' : $test.globals:root || '/bibliography/items'
+    'url' : $lgcha.globals:root || '/bibliography/items'
     }
   let $content := 
     for $bibliographicalItem in $bibliographicalItems 
@@ -775,7 +775,7 @@ declare function getBibliographicalItemsList($queryParams as map(*)) as map(*) {
     'tei' : $bibliographicalItem,
     'uuid' : $uuid,
     'path' : '/bibliography/items/',
-    'url' : $test.globals:root || '/bibliography/items/' || $uuid
+    'url' : $lgcha.globals:root || '/bibliography/items/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -811,7 +811,7 @@ declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
     'tei' : $bibliographicalItem,
     'uuid' : $uuid,
     'path' : '/bibliography/items/',
-    'url' : $test.globals:root || '/bibliography/items/' || $uuid
+    'url' : $lgcha.globals:root || '/bibliography/items/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -874,12 +874,12 @@ declare function getSearch($queryParams as map(*)) as map(*) {
  :)
 declare function getSearchExact($queryParams) {
   let $gdpFtIndex := db:open('gdpFtIndex')
-  let $gdp := db:open('test')
+  let $gdp := db:open('lgcha')
   (: for $result score $s in $gdpFtIndex//tei:div[@type="section" or @type="item"]/tei:p :)
   let $db :=
     if ($queryParams?type = 'none')
     then db:open('gdpFtIndex')
-    else db:open('test')
+    else db:open('lgcha')
   let $content := if ($queryParams?text = 'all' and $queryParams?type = 'none') then $db//*:p[@xml:id]
     else if ($queryParams?text != 'all' and $queryParams?type = 'none') then $db//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]//*:p[@xml:id]
     else if ($queryParams?text = 'all' and $queryParams?type = 'persons') then $db//*:p[@xml:id]//*:persName
@@ -890,8 +890,8 @@ declare function getSearchExact($queryParams) {
     else if ($queryParams?text != 'all' and $queryParams?type = 'objects') then $db//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]//*:p[@xml:id]//*:objectName
   (:let $content :=
     let $texts :=
-      if ($queryParams?text = 'none') then db:open('test')
-      else db:open('test')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
+      if ($queryParams?text = 'none') then db:open('lgcha')
+      else db:open('lgcha')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
     return if ($queryParams?type = 'all') then $texts//*:p[@xml:id]
     else if ($queryParams?type = 'persons') then $texts//*:p[@xml:id]//*:persName
     else if ($queryParams?type = 'places') then $texts//*:p[@xml:id]//*:placeName
@@ -929,14 +929,14 @@ declare function getSearchExact($queryParams) {
     'size' : getWordsCount($segment, map{}),
     'uuid' : $uuid => xs:string(),
     'path' : '/items/',
-    'url' : $test.globals:root || '/items/' || $uuid,
+    'url' : $lgcha.globals:root || '/items/' || $uuid,
     'combining' : 'exact'
   }
 };
 
 declare function getSearchAny($queryParams) {
   let $gdpFtIndex := db:open('gdpFtIndex')
-  let $gdp := db:open('test')
+  let $gdp := db:open('lgcha')
   let $texts := if ($queryParams?text = 'all')
     then db:open('gdpFtIndex')
     else db:open('gdpFtIndex')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
@@ -974,14 +974,14 @@ declare function getSearchAny($queryParams) {
     'size' : $size,
     'uuid' : $uuid => xs:string(),
     'path' : '/items/',
-    'url' : $test.globals:root || '/items/' || $uuid,
+    'url' : $lgcha.globals:root || '/items/' || $uuid,
     'combining' : 'any'
   }
 };
 
 declare function getSearchAllWord($queryParams) {
   let $gdpFtIndex := db:open('gdpFtIndex')
-  let $gdp := db:open('test')
+  let $gdp := db:open('lgcha')
   let $texts := if ($queryParams?text = 'all')
     then db:open('gdpFtIndex')
     else db:open('gdpFtIndex')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
@@ -1019,13 +1019,13 @@ declare function getSearchAllWord($queryParams) {
     'size' : $size,
     'uuid' : $uuid => xs:string(),
     'path' : '/items/',
-    'url' : $test.globals:root || '/items/' || $uuid
+    'url' : $lgcha.globals:root || '/items/' || $uuid
   }
 };
 
 declare function getSearchPhrase($queryParams) {
   let $gdpFtIndex := db:open('gdpFtIndex')
-  let $gdp := db:open('test')
+  let $gdp := db:open('lgcha')
   let $texts := if ($queryParams?text = 'all')
     then db:open('gdpFtIndex')
     else db:open('gdpFtIndex')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
@@ -1063,14 +1063,14 @@ declare function getSearchPhrase($queryParams) {
     'size' : $size,
     'uuid' : $uuid => xs:string(),
     'path' : '/items/',
-    'url' : $test.globals:root || '/items/' || $uuid,
+    'url' : $lgcha.globals:root || '/items/' || $uuid,
     'combining' : 'phrase'
   }
 };
 
 declare function getSearchAll($queryParams) {
   let $gdpFtIndex := db:open('gdpFtIndex')
-  let $gdp := db:open('test')
+  let $gdp := db:open('lgcha')
   let $texts := if ($queryParams?text = 'all')
     then db:open('gdpFtIndex')
     else db:open('gdpFtIndex')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
@@ -1108,7 +1108,7 @@ declare function getSearchAll($queryParams) {
     'size' : $size,
     'uuid' : $uuid => xs:string(),
     'path' : '/items/',
-    'url' : $test.globals:root || '/items/' || $uuid,
+    'url' : $lgcha.globals:root || '/items/' || $uuid,
     'combining' : 'all'
   }
 };
@@ -1146,7 +1146,7 @@ declare function getIndexList($queryParams as map(*)) as map(*) {
       'title' : $entry//tei:fileDesc/tei:titleStmt/tei:title,
       'uuid' : fn:string($uuid),
       'path' : '/',
-      'url' : $test.globals:root || '/' || $uuid
+      'url' : $lgcha.globals:root || '/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -1192,7 +1192,7 @@ declare function getIndexLocorum($queryParams as map(*)) as map(*) {
       'texts' : array{ $entry/tei:listRelation/tei:relation/@type ! fn:string(.) },
       'uuid' : fn:string($uuid),
       'path' : '/indexLocorum/',
-      'url' : $test.globals:root || '/indexLocorum/' || $uuid
+      'url' : $lgcha.globals:root || '/indexLocorum/' || $uuid
       }
   return  map{
     'meta'    : $meta,
@@ -1235,7 +1235,7 @@ declare function getIndexLocorumItem($queryParams as map(*)) as map(*) {
         },
       'uuid' : fn:string($uuid),
       'path' : '/indexLocorum/',
-      'url' : $test.globals:root || '/indexLocorum/' || $uuid,
+      'url' : $lgcha.globals:root || '/indexLocorum/' || $uuid,
       'occurences' : array{ getOccurences($entry, map{'db' : $db}) }
       }
   return  map{
@@ -1284,7 +1284,7 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
       'texts' : array{ $entry/tei:listRelation/tei:relation/@type ! fn:string(.) },
       'uuid' : fn:string($uuid),
       'path' : '/indexNominum/',
-      'url' : $test.globals:root || '/indexNominum/' || $uuid
+      'url' : $lgcha.globals:root || '/indexNominum/' || $uuid
       }
   return  map{
     'meta'    : $meta,
@@ -1333,7 +1333,7 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
         },
       'uuid' : fn:string($uuid),
       'path' : '/indexNominum/',
-      'url' : $test.globals:root || '/indexNominum/' || $uuid,
+      'url' : $lgcha.globals:root || '/indexNominum/' || $uuid,
       'attestedForms' : array{ getAttestedForms($entry, map{'element' : 'person'}) },
       'occurences' : array{ getOccurences($entry, map{'db' : $db}) }
       }
@@ -1380,7 +1380,7 @@ declare function getIndexOperum($queryParams as map(*)) as map(*) {
       'texts' : array{ $entry/tei:listRelation/tei:relation/@type ! fn:string(.) },
       'uuid' : fn:string($uuid),
       'path' : '/indexOperum/',
-      'url' : $test.globals:root || '/indexOperum/' || $uuid
+      'url' : $lgcha.globals:root || '/indexOperum/' || $uuid
       }
   return  map{
     'meta'    : $meta,
@@ -1424,7 +1424,7 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
           'name' : <tei:persName>{getName($author, $lang)}</tei:persName>,
           'uuid' : $refUuid,
           'path' : '/indexNominum/',
-          'url' : $test.globals:root || '/indexNominum/' || $refUuid
+          'url' : $lgcha.globals:root || '/indexNominum/' || $refUuid
           }
         },
       'dates' : $entry/tei:creation/tei:date,
@@ -1439,7 +1439,7 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
         },
       'uuid' : fn:string($uuid),
       'path' : '/items/',
-      'url' : $test.globals:root || '/items/' || $uuid,
+      'url' : $lgcha.globals:root || '/items/' || $uuid,
       'occurences' : array{ getOccurences($entry, map{'db' : $db}) }
       }
   return  map{
@@ -1454,7 +1454,7 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
 declare
   %updating
 function addId2IndexedEntities($indexId) {
-  let $db := db:open('test')
+  let $db := db:open('lgcha')
   let $index := $db//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $indexId]]
   for $occurence in fn:distinct-values($index//tei:listRelation/tei:relation/@passive ! fn:tokenize(., '\s+'))
   let $entries := $index//*[tei:listRelation/tei:relation[fn:contains(@passive, $occurence)]]
