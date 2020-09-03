@@ -32,7 +32,7 @@ declare default function namespace 'test.edition' ;
  : this resource function redirect to /home
  :)
 declare 
-  %rest:path('/')
+  %rest:path('/test')
 function index() {
   <rest:response>
     <http:response status="303" message="See Other">
@@ -46,8 +46,8 @@ function index() {
  :
  : @return an html home page for the edition
  :)
-declare 
-  %rest:path('/home')
+declare
+  %rest:path('/test/home')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -55,7 +55,7 @@ function editionHome() {
   let $queryParams := map {
     'project' : 'test',
     'dbName' : 'test',
-    'model' : 'tei', 
+    'model' : 'tei',
     'function' : 'getCorpusList'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
@@ -74,8 +74,8 @@ function editionHome() {
  :
  : @return an html representation of the corpus resource
  :)
-declare 
-  %rest:path('/corpus')
+declare
+  %rest:path('/test/corpus')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
@@ -128,8 +128,8 @@ function corpusJson() {
  : @param $corpusId the corpus ID
  : @return an html representation of the corpus resource
  :)
-declare 
-  %rest:path('/corpus/{$corpusId}')
+declare
+  %rest:path('/test/corpus/{$corpusId}')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
@@ -157,8 +157,8 @@ function corpusItem($corpusId as xs:string) {
  : @param $textId the text ID
  : @return an html representation of the text resource
  :)
-declare 
-  %rest:path('/texts/{$textId}')
+declare
+  %rest:path('/test/texts/{$textId}')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
@@ -186,8 +186,8 @@ function textItems($textId as xs:string) {
  : @param $textId the text ID
  : @return a json toc of the text
  :)
-declare 
-  %rest:path('/texts/{$textId}/toc')
+declare
+  %rest:path('/test/texts/{$textId}/toc')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -214,7 +214,7 @@ function textItemsTocJson($textId as xs:string) {
  : @return a json toc of the text
  :)
 declare
-  %rest:path('/texts/{$textId}/pagination')
+  %rest:path('/test/texts/{$textId}/pagination')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -240,14 +240,14 @@ function textItemsPaginationJson($textId as xs:string) {
  : @param $corpusId the text item ID
  : @return an html representation of the text item
  :)
-declare 
-  %rest:path('/items/{$itemId}')
+declare
+  %rest:path('/test/items/{$itemId}')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
 function items($itemId as xs:string) {
   let $queryParams := map {
-    
+
     'itemId' : $itemId,
     'project' : 'test',
     'dbName' : 'test',
@@ -270,8 +270,8 @@ function items($itemId as xs:string) {
  : @param $pattern a GET param giving the name of the calling HTML tag
  : @todo use this tag !
  :)
-declare 
-  %rest:path('/model')
+declare
+  %rest:path('/test/model')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
@@ -299,8 +299,8 @@ function model() {
  : @param $pattern a GET param giving the name of the calling HTML tag
  : @todo use this tag !
  :)
-declare 
-  %rest:path('/about')
+declare
+  %rest:path('/test/about')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
@@ -327,8 +327,8 @@ function about() {
  :
  : @return an html list of indexes
  :)
-declare 
-  %rest:path('/index')
+declare
+  %rest:path('/test/index')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
@@ -336,7 +336,7 @@ function indexes() {
   let $queryParams := map {
     'project' : 'test',
     'dbName' : 'test',
-    'model' : 'tei', 
+    'model' : 'tei',
     'function' : 'getIndexList'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
@@ -354,8 +354,8 @@ function indexes() {
  :
  : @return an html list of indexLocorum entries
  :)
-declare 
-  %rest:path('/indexLocorum')
+declare
+  %rest:path('/test/indexLocorum')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
@@ -370,7 +370,7 @@ function indexLocorum(
   let $queryParams := map {
     'project' : 'test',
     'dbName' : 'test',
-    'model' : 'tei', 
+    'model' : 'tei',
     'function' : 'getIndexLocorum',
     'start' : $start,
     'count' : $count,
@@ -392,8 +392,8 @@ function indexLocorum(
  : @param $itemId the item ID
  : @return an html representation of an indexLocorum item
  :)
-declare 
-  %rest:path('/indexLocorum/{$itemId}')
+declare
+  %rest:path('/test/indexLocorum/{$itemId}')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
@@ -401,7 +401,7 @@ function indexLocorumItem($itemId) {
   let $queryParams := map {
     'project' : 'test',
     'dbName' : 'test',
-    'model' : 'tei', 
+    'model' : 'tei',
     'function' : 'getIndexLocorumItem',
     'itemId' : $itemId
     }
@@ -420,8 +420,8 @@ function indexLocorumItem($itemId) {
  :
  : @return a html list of indexNominum entries
  :)
-declare 
-  %rest:path('/indexNominum')
+declare
+  %rest:path('/test/indexNominum')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
@@ -438,7 +438,7 @@ function indexNominum(
   let $queryParams := map {
     'project' : 'test',
     'dbName' : 'test',
-    'model' : 'tei', 
+    'model' : 'tei',
     'function' : 'getIndexNominum',
     'start' : $start,
     'count' : $count,
@@ -461,8 +461,8 @@ function indexNominum(
  : @param $itemId the item ID
  : @return an html representation of an indexNominum item
  :)
-declare 
-  %rest:path('/indexNominum/{$itemId}')
+declare
+  %rest:path('/test/indexNominum/{$itemId}')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
