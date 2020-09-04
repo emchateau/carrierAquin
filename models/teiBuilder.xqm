@@ -1,5 +1,5 @@
 xquery version "3.0" ;
-module namespace lgcha.models.tei = 'lgcha.models.tei' ;
+module namespace carrierAquin.models.tei = 'carrierAquin.models.tei' ;
 
 (:~
  : This module is a TEI models library for a synopsx starter project
@@ -18,11 +18,11 @@ module namespace lgcha.models.tei = 'lgcha.models.tei' ;
 
 import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
 
-import module namespace lgcha.globals = 'lgcha.globals' at '../globals.xqm' ;
+import module namespace carrierAquin.globals = 'carrierAquin.globals' at '../globals.xqm' ;
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
-declare default function namespace 'lgcha.models.tei' ;
+declare default function namespace 'carrierAquin.models.tei' ;
 
 (:~
  : ~:~:~:~:~:~:~:~:~
@@ -170,7 +170,7 @@ declare function getBiblDates($content as element()*, $dateFormat as xs:string) 
 declare function getBiblExpressions($content as element(), $dateFormat as xs:string) {
   let $id := $content/@xml:id
   return fn:distinct-values(
-      db:open('lgcha')//tei:biblStruct[tei:listRelation/tei:relation[@type = 'work'][@corresp = '#' || $content/@xml:id]]
+      db:open('carrierAquin')//tei:biblStruct[tei:listRelation/tei:relation[@type = 'work'][@corresp = '#' || $content/@xml:id]]
     )
 };
 
@@ -183,14 +183,14 @@ declare function getBiblExpressions($content as element(), $dateFormat as xs:str
  : @todo formats
  :)
 declare function getBiblManifestations($content as element(), $dateFormat as xs:string) as map(*)* {
-  for $ref in db:open('lgcha')//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id='gdpBibliography']]//tei:biblStruct
+  for $ref in db:open('carrierAquin')//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id='gdpBibliography']]//tei:biblStruct
   [tei:listRelation/tei:relation[@type = 'expression'][@corresp = '#' || $content/@xml:id]]
   group by $manifestation := $ref/@xml:id
   let $path := '/bibliography/manifestation/'
   return map{
     'uuid' : $manifestation => xs:string(),
     'path' : $path,
-    'url' : $lgcha.globals:root || $path || $manifestation,
+    'url' : $carrierAquin.globals:root || $path || $manifestation,
     'tei' : $ref
   }
 };
@@ -245,9 +245,9 @@ declare function getOtherEditions($ref as node()? ) as element()* {
   let $corresp := $ref//tei:relation[@type]/@corresp
   return 
     if ($ref/@type = 'expression') 
-    then <tei:listBibl>{db:open('lgcha')//tei:biblStruct[tei:listRelation/tei:relation[@type = 'expression'][fn:substring-after(@corresp, '#') = $ref/@xml:id]]}
+    then <tei:listBibl>{db:open('carrierAquin')//tei:biblStruct[tei:listRelation/tei:relation[@type = 'expression'][fn:substring-after(@corresp, '#') = $ref/@xml:id]]}
       </tei:listBibl>
-    else <tei:listBibl>{db:open('lgcha')//tei:biblStruct[tei:listRelation/tei:relation[@type = 'expression'][@corresp = $corresp ]]}</tei:listBibl>
+    else <tei:listBibl>{db:open('carrierAquin')//tei:biblStruct[tei:listRelation/tei:relation[@type = 'expression'][@corresp = $corresp ]]}</tei:listBibl>
 };
 
 (:~
@@ -318,7 +318,7 @@ declare function getBlogItemAfter($queryParams as map(*), $text as element(), $l
  :)
 declare function getRef($content as element()) as element()? {
   let $refId := fn:substring-after($content/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl/@copyOf, '#')
-  let $db := db:open('lgcha')
+  let $db := db:open('carrierAquin')
   return ($db//tei:biblStruct[@xml:id = $refId] | $db//tei:bibl[@xml:id = $refId])[1]
 };
 
@@ -427,7 +427,7 @@ declare function getXmlTeiById($queryParams){
  : @todo print the real uri
  :)
 declare function getUrl($content, $path as xs:string, $lang as xs:string) as xs:string {
-  $lgcha.globals:root || $path || $content
+  $carrierAquin.globals:root || $path || $content
 };
 
 
@@ -515,7 +515,7 @@ declare function getOccurences($entry as element()) as map(*)* {
     'title' : getSectionTitle($entry),
     'uuid' : $uuid,
     'path' : '/item/',
-    'url' : $lgcha.globals:root || '/items/' || $uuid
+    'url' : $carrierAquin.globals:root || '/items/' || $uuid
   }
 };:)
 
@@ -525,7 +525,7 @@ declare function getOccurences($entry as element()) as map(*)* {
  : @return maps for each attested form with its occurences
  :)
  declare function getAttestedForms($entry as element(), $options as map(*)) {
-   for $name in db:open('lgcha')//tei:persName[@xml:id = $entry/tei:listRelation/tei:relation/@passive  ! fn:tokenize(., ' ') ! fn:substring-after(., '#')]
+   for $name in db:open('carrierAquin')//tei:persName[@xml:id = $entry/tei:listRelation/tei:relation/@passive  ! fn:tokenize(., ' ') ! fn:substring-after(., '#')]
    group by $distinctNames := fn:distinct-values($name)
    return map{
      'title' : $name[1] ! <tei:persName>{ dispatch(.,map{}) }</tei:persName>,
@@ -558,10 +558,10 @@ declare function getOccurences($entry as element(), $options as map(*)) as map(*
           }
       for $item in fn:distinct-values($lookup?entry)
       return map{
-        'title' : getSectionTitle(db:open('lgcha')//tei:div[@xml:id=$item]),
+        'title' : getSectionTitle(db:open('carrierAquin')//tei:div[@xml:id=$item]),
         'uuid' : xs:string($item),
         'path' : '/item/',
-        'url' : $lgcha.globals:root || '/items/' || $item,
+        'url' : $carrierAquin.globals:root || '/items/' || $item,
         'ids' : array{ $lookup[?entry = $item]?id }
        }
     }
@@ -594,7 +594,7 @@ declare function getDistinctMaps($maps as map(*)*, $options) as map(*)* {
  : @return a filtered list of maps
  :)
 declare function getDistinctFilters($ids as xs:string*, $options) as map(*)* {
-  let $db := db:open('lgcha')
+  let $db := db:open('carrierAquin')
   for $id in $ids
   group by $distinctId := $id
   let $path := if ($options?filter = 'persons') then '/indexNominum/'
@@ -611,7 +611,7 @@ declare function getDistinctFilters($ids as xs:string*, $options) as map(*)* {
       'uuid' : $distinctId,
       'quantity' : fn:count($id),
       'path' : $path,
-      'url' : $lgcha.globals:root || $path || $distinctId
+      'url' : $carrierAquin.globals:root || $path || $distinctId
   }
 };
 
@@ -638,7 +638,7 @@ declare function getShortRef($ids as xs:string*, $options as map(*)) {
  : @todo add orgName for titles in persons
  :)
 declare function getIndexEntries($item as element()) as map(*)* {
-  let $db := db:open('lgcha')
+  let $db := db:open('carrierAquin')
   let $personsRefs := $item//tei:persName union $item//tei:orgName
 (:  let $objectsRefs := $item//tei:objectName:)
   let $placesRefs := $item//tei:placeName union $item//tei:geogName
@@ -652,7 +652,7 @@ declare function getIndexEntries($item as element()) as map(*)* {
       'title' : $person/tei:persName[1],
       'uuid' : $uuid,
       'path' : '/indexNominum/',
-      'url' : $lgcha.globals:root || '/indexNominum/' || $uuid
+      'url' : $carrierAquin.globals:root || '/indexNominum/' || $uuid
     }
   let $places :=
       for $placesRef in $placesRefs[@ref]
@@ -664,7 +664,7 @@ declare function getIndexEntries($item as element()) as map(*)* {
         'title' : $place/tei:placeName[1],
         'uuid' : $uuid,
         'path' : '/indexLocorum/',
-        'url' : $lgcha.globals:root || '/indexLocorum/' || $uuid
+        'url' : $carrierAquin.globals:root || '/indexLocorum/' || $uuid
       }
   (:let $objects :=
       for $objectsRef in $objectsRefs[@ref]
@@ -688,7 +688,7 @@ declare function getIndexEntries($item as element()) as map(*)* {
  : @return a div
  :)
 declare function getDivFromId($id as xs:string) as element() {
-  db:open('lgcha')//*[@xml:id=$id]/ancestor::tei:div[1]
+  db:open('carrierAquin')//*[@xml:id=$id]/ancestor::tei:div[1]
 };
 
 (:~
@@ -706,7 +706,7 @@ declare function getItemFromPage($text as element(), $options as map(*)) {
     'pages' : getPages($item, $options),
     'uuid' : $uuid,
     'path' : '/items/',
-    'url' : $lgcha.globals:root || '/items/' || $uuid,
+    'url' : $carrierAquin.globals:root || '/items/' || $uuid,
     'tei' : $item,
     'itemBeforeTitle' : getSectionTitle($itemBefore), (: is a sequence :)
     'itemBeforeUrl' : getUrl($itemBefore/@xml:id, '/items/', $lang),
@@ -780,7 +780,7 @@ declare function getTitleMap($nodes, $options as map(*)) {
       'title' : getSectionTitle($node),
       'uuid' : $uuid,
       'path' : '/items/',
-      'url' : $lgcha.globals:root || '/items/' || $uuid,
+      'url' : $carrierAquin.globals:root || '/items/' || $uuid,
       'children' : array{ getNextDiv($node, $options) }
     }
 };

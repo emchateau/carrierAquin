@@ -1,5 +1,5 @@
 xquery version '3.0' ;
-module namespace lgcha.globals = 'lgcha.globals' ;
+module namespace carrierAquin.globals = 'carrierAquin.globals' ;
 
 (:~
  : This module is a Config file for a synopsx starter project
@@ -18,4 +18,4 @@ module namespace lgcha.globals = 'lgcha.globals' ;
 
 
  (: declare variable $gdp.globals:root := 'http://guidesdeparis.net' ; :)
- declare variable $lgcha.globals:root := 'http://localhost:8984' ;
+ declare variable $carrierAquin.globals:root := 'http://localhost:8984' ;

@@ -1,5 +1,5 @@
 xquery version "3.0" ;
-module namespace lgcha.models.tei = 'lgcha.models.tei' ;
+module namespace carrierAquin.models.tei = 'carrierAquin.models.tei' ;
 
 (:~
  : This module is a TEI models library for a synopsx starter project
@@ -19,11 +19,11 @@ module namespace lgcha.models.tei = 'lgcha.models.tei' ;
 import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../../../models/tei.xqm' ;
 
-import module 'lgcha.models.tei' at 'teiBuilder.xqm' ;
+import module 'carrierAquin.models.tei' at 'teiBuilder.xqm' ;
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
-declare default function namespace 'lgcha.models.tei' ;
+declare default function namespace 'carrierAquin.models.tei' ;
 
 (:~
  : this function creates a map for a corpus item with teiHeader 

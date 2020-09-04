@@ -1,5 +1,5 @@
 xquery version '3.0' ;
-module namespace lgcha.static = 'lgcha.static' ;
+module namespace carrierAquin.static = 'carrierAquin.static' ;
 
 (:~
  : This module is a rest for Paris' guidebooks blog
@@ -20,7 +20,7 @@ module namespace lgcha.static = 'lgcha.static' ;
 import module namespace rest = 'http://exquery.org/ns/restxq';
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
 
-declare default function namespace 'lgcha.static' ;
+declare default function namespace 'carrierAquin.static' ;
 
 (:~
 : resource function for the static files
@@ -29,9 +29,9 @@ declare default function namespace 'lgcha.static' ;
 : @return rest response and binary file
 :)
 declare
-%rest:path('/gdp/static/{$file=.+}')
+%rest:path('/carrierAquin/static/{$file=.+}')
 function file($file as xs:string) as item()+ {
-  let $path := $G:WORKSPACE || 'gdp/static/' ||  $file
+  let $path := $G:WORKSPACE || 'carrierAquin/static/' ||  $file
   return (
     web:response-header(map {'media-type' : web:content-type($path) }),
     file:read-binary($path))
