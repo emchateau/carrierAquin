@@ -181,6 +181,7 @@ function textItems($textId as xs:string) {
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
+
 (:~
  : resource function for text toc by ID
  :
@@ -233,36 +234,6 @@ function textItemsPaginationJson($textId as xs:string) {
     'xquery' : 'tei2html'
     }
   return carrierAquin.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
-};
-
-(:~
- : resource function for a text item by ID
- :
- : @param $corpusId the text item ID
- : @return an html representation of the text item
- :)
-declare
-  %rest:path('/carrierAquin/items/{$itemId}')
-  %rest:produces('text/html')
-  %output:method('html')
-  %output:html-version('5.0')
-function items($itemId as xs:string) {
-  let $queryParams := map {
-
-    'itemId' : $itemId,
-    'project' : 'carrierAquin',
-    'dbName' : 'carrierAquin',
-    'model' : 'tei',
-    'function' : 'getItemById'
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $result := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'page.xhtml',
-    'pattern' : 'incItem.xhtml',
-    'xquery' : 'tei2html'
-    }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -360,28 +331,18 @@ declare
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
-  %rest:query-param("start", "{$start}", 1)
-  %rest:query-param("count", "{$count}", 100)
-  %rest:query-param("text", "{$text}", 'all')
-function indexLocorum(
-  $start as xs:integer,
-  $count as xs:integer,
-  $text as xs:string*
-  ) {
+function indexLocorum() {
   let $queryParams := map {
     'project' : 'carrierAquin',
     'dbName' : 'carrierAquin',
     'model' : 'tei',
-    'function' : 'getIndexLocorum',
-    'start' : $start,
-    'count' : $count,
-    'text' : $text
+    'function' : 'getIndexLocorum'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'incIndexLocorum.xhtml',
+    'pattern' : 'incIndex.xhtml',
     'xquery' : 'tei2html'
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)

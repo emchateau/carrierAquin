@@ -180,16 +180,16 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     }
   let $content := 
     for $corpus at $count in $corpora/tei:teiCorpus 
-    let $uuid := $corpus/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
+    let $uuid := $corpus/@xml:id
     return map {
     'title' : getTitles($corpus, $lang),
     'date' : getEditionDates($corpus, $dateFormat),
     'author' : getAuthors($corpus, $lang),
     'abstract' : getAbstract($corpus, $lang),
-    'textsQuantity' : getQuantity($corpus/tei:TEI, 'texte disponible', 'textes disponibles'),
+    'textsQuantity' : (: getQuantity($corpus/tei:TEI, 'texte disponible', 'textes disponibles') :) fn:count($corpus/tei:TEI),
     'uuid' : $uuid,
     'path' : '/corpus/',
-    'url' : $carrierAquin.globals:root || '/corpus/' || $uuid,
+    'url' : $carrierAquin.globals:root || '/carrierAquin/corpus/' || $uuid,
     'weight' : getStringLength($corpus)
     }
   return  map{
@@ -209,75 +209,24 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
   let $corpusId := map:get($queryParams, 'corpusId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $corpus := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus[tei:teiHeader//tei:sourceDesc[@xml:id = $corpusId]]
+  let $corpus := synopsx.models.synopsx:getDb($queryParams)//tei:teiCorpus[@xml:id = $corpusId]
   let $meta := map{
     'title' : 'Liste des textes disponibles', 
-    'quantity' : getQuantity($corpus/tei:TEI, 'texte disponible', 'textes disponibles'),
+    'quantity' : fn:count($corpus/tei:TEI),
     'author' : getAuthors($corpus, $lang),
     'copyright'  : getCopyright($corpus, $lang),
-    'description' : getDescription($corpus, $lang),
-    'keywords' : array{getKeywords($corpus, $lang)}
+    'description' : getDescription($corpus, $lang)
     }
   let $content := 
     for $text in $corpus/tei:TEI 
-    let $uuid := $text/tei:teiHeader//tei:sourceDesc/@xml:id
+    let $uuid := $text/tei:teiHeader//tei:sourceDesc/tei:msDesc/@xml:id
     return map {
-    'title' : getTitles($text, $lang), (: @todo sequence or main and sub :)
-    'date' : getEditionDates(getOtherEditions(getRef($text))/tei:biblStruct, $dateFormat),
+    'title' : getTitles($text, $lang),
     'author' : getAuthors($text, $lang),
-    'biblio' : getRef($text),
-    'abstract' : getAbstract($text, $lang),
-    'format' : getRef($text)//tei:dim[@type = 'format'],
-    'itemsNb' : fn:count($text//tei:*[@type = 'item' or @type = 'section']), (: todo value and unit :)
     'weight' : getStringLength($text),
-    'uuid' : $uuid,
+    'uuid' : fn:string($uuid),
     'path' : '/texts/',
-    'url' : $carrierAquin.globals:root || '/texts/' || $uuid,
-    'otherEditions' : fn:count(getOtherEditions(getRef($text))/tei:biblStruct) (: todo value and unit :)
-    }
-  return  map{
-    'meta'    : $meta,
-    'content' : $content
-    }
-};
-
-(:~
- : this function get text by ID
- :
- : @param $queryParams the request params sent by restxq 
- : @return a map with meta and content
- : @todo suppress the @xml:id filter on div
- : @todo check the text hierarchy
- : @rmq depreciated, replaced by getTocByTextId()
- :)
-declare function getTextItemsById($queryParams as map(*)) as map(*) {
-  let $textId := map:get($queryParams, 'textId')
-  let $lang := 'fr'
-  let $dateFormat := 'jjmmaaa'
-  let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
-  let $ref := getRef($text)
-  let $meta := map{
-    'title' : 'Item du corpus',
-    'ref' : $ref, 
-    'quantity' : getQuantity($text, 'texte disponible', 'textes disponibles'),
-    'author' : getAuthors($text, $lang),
-    'copyright'  : getCopyright($text, $lang),
-    'description' : getDescription($text, $lang),
-    'keywords' : array{getKeywords($text, $lang)}
-    }
-  let $content := 
-    (: for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id ) or (@type = 'chapter' and @xml:id )] :)
-    for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id )]
-    let $uuid := (if ($item/@xml:id) then $item/@xml:id else 'toto')
-    return map {
-    'title' : getSectionTitle($item),
-    'date' : getDate($ref, $dateFormat),
-    'author' : getAuthors($text, $lang),
-    'abstract' : getAbstract($text, $lang),
-    'tei' : $item,
-    'path' : '/items/',
-    'uuid' : $uuid,
-    'url' : $carrierAquin.globals:root || '/items/' || $uuid
+    'url' : $carrierAquin.globals:root || '/carrierAquin/texts/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -297,27 +246,21 @@ declare function getTextById($queryParams as map(*)) as map(*) {
   let $textId := map:get($queryParams, 'textId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
+  let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc/tei:msDesc[@xml:id = $textId]]
   let $meta := map{
-    'title' : 'Sommaire de ' || getTitles($text, $lang), 
-    'quantity' : getRef($text),
+    'title' : getTitles($text, $lang), 
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
-    'description' : getDescription($text, $lang),
-    'keywords' : array{getKeywords($text, $lang)}
+    'description' : getDescription($text, $lang)
     }
-  let $content := 
-    for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id )]
-    let $uuid := (if ($item/@xml:id) then $item/@xml:id else 'toto')
+  let $content := for $item in $text
     return map {
-    'title' : getSectionTitle($item),
+    'title' : getTitles($text, $lang),
     'date' : getDate($text, $dateFormat),
     'author' : getAuthors($text, $lang),
-    'abstract' : getAbstract($text, $lang),
-    'tei' : $item,
-    'path' : '/items/',
-    'uuid' : $uuid,
-    'url' : $carrierAquin.globals:root || '/items/' || $uuid
+    'destinataire' : $text/tei:teiHeader/tei:profileDesc/tei:correspDesc/tei:correspAction[@type="sent"]/tei:placeName,
+    'destinateur' : $text/tei:teiHeader/tei:profileDesc/tei:correspDesc/tei:correspAction[@type="received"]/tei:placeName,
+    'tei' : $text
     }
   return  map{
     'meta'    : $meta,
@@ -1160,24 +1103,14 @@ declare function getIndexList($queryParams as map(*)) as map(*) {
 declare function getIndexLocorum($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $data := if ($queryParams?text = 'all')
-      then synopsx.models.synopsx:getDb($queryParams)//tei:listPlace/tei:place[@xml:id]
-      else synopsx.models.synopsx:getDb($queryParams)//tei:listPlace/tei:place[@xml:id][tei:listRelation/tei:relation/@type = $queryParams?text]
-  (: let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listPlace/tei:place[@xml:id] :)
-  let $results := if ($queryParams?letter != 'all') then
-    for $entry in $data where $entry/tei:placeName[1][fn:starts-with(fn:lower-case(.), fn:lower-case($queryParams?letter))] return $entry
-    else $data
+  let $places := synopsx.models.synopsx:getDb($queryParams)//tei:text
   let $meta := map{
     'title' : 'Index des lieux',
-    'author' : 'Guides de Paris',
-    'quantity' : getQuantity($results, 'entrée', 'entrées'),
-    'text' : $queryParams?text,
-    'start' : $queryParams?start,
-    'count' : $queryParams?count,
-    'letter' : $queryParams?letter
+    'author' : 'Université de Montréal',
+    'quantity' : fn:count($places)
     }
   let $content :=
-    for $entry in $results
+    for $entry in $places
     let $uuid := $entry/@xml:id
     return map {
       'title' : $entry/tei:placeName[1],
@@ -1186,14 +1119,13 @@ declare function getIndexLocorum($queryParams as map(*)) as map(*) {
       'ville' : $entry/tei:district,
       'geo' : $entry/tei:location/tei:geo,
       'letter' : fn:substring($entry/tei:placeName[1], 1, 1) => fn:lower-case(),
-      'texts' : array{ $entry/tei:listRelation/tei:relation/@type ! fn:string(.) },
       'uuid' : fn:string($uuid),
       'path' : '/indexLocorum/',
       'url' : $carrierAquin.globals:root || '/indexLocorum/' || $uuid
       }
   return  map{
     'meta'    : $meta,
-    'content' : fn:subsequence($content, $queryParams?start, $queryParams?count)
+    'content' : $content
     }
 };
 

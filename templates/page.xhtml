@@ -6,7 +6,7 @@
     <meta name="author" content="{author}" />
     <meta name="keywords" content="{keywords}" />
     <link rel="copyright" href="{copyright}"/>
-    <link href="/carrierAquin/static/css/main.css" rel="stylesheet" />
+    <!-- <link href="/carrierAquin/static/css/main.css" rel="stylesheet" /> -->
   </head>
   <body>
     <header>
@@ -14,14 +14,16 @@
     </header>
     <nav id="navigation">
       <ul>
-        <li><a href="#index">foo</a></li>
-        <li><a href="#foo1">foo1</a></li>
+        <li><a href="/carrierAquin/home">Accueil</a></li>
+        <li><a href="/carrierAquin/corpus/carrierAquinCorrespondance">Correspondance</a></li>
+        <li><a href="/carrierAquin/corpus/carrierAquinTapuscrits">Tapuscrits</a></li>
+        <li><a href="/carrierAquin/corpus/carrierAquinProjets">Projets</a></li>
       </ul>
     </nav>
     <main>
       <section>
-        <h1>test</h1>
-        <article>{content}</article>
+        <h1>{title}</h1>
+        <div>{content}</div>
       </section>
     </main>
   </body>
