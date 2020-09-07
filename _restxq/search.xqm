@@ -2,7 +2,7 @@ xquery version "3.0" ;
 module namespace carrierAquin.search = 'carrierAquin.search' ;
 
 (:~
- : This module is a rest for Paris' guidebooks electronic edition
+ : This module is a rest file for a synopsx starter project
  :
  : @version 1.0
  : @date 2019-05
