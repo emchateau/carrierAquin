@@ -48,7 +48,7 @@ declare default function namespace 'carrierAquin.search' ;
  : @param $filterObjects filter with objects id
  :)
 declare
-  %rest:path('/search')
+  %rest:path('/carrierAquin/search')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -105,14 +105,13 @@ function getSearchJson(
 };
 
 (:~
- : resource function for indexing
+ : resource function for full-text indexing
  :
  : @return add @ref from indexes in the db
  :)
 declare
-  %rest:path('/indexing')
+  %rest:path('/carrierAquin/createCarrierAquinFt')
   %updating
 function indexing() {
-  let $indexId := ('gdpIndexNominum', 'gdpIndexLocorum')
-  for $index in $indexId return carrierAquin.models.tei:addId2IndexedEntities($index)
+  carrierAquin.models.tei:createCarrierAquinFt()
 };

@@ -455,7 +455,7 @@ declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
     'title' : 'Liste des œuvres', 
     'quantity' : getQuantity($bibliographicalWorks, 'œuvre', 'œuvres'),
     'copyright' : getCopyright($bibliography, $lang),
-    'description' : 'Liste des œuvres de la bibliographie des Guides de Paris, au sens des FRBR',
+    'description' : 'Liste des œuvres de la bibliographie des Université de Montréal, au sens des FRBR',
     'keywords' : array{getKeywords($bibliography, $lang)},
     'url' : $carrierAquin.globals:root || '/bibliography/works'
     }
@@ -535,7 +535,7 @@ declare function getBibliographicalExpressionsList($queryParams) {
     'quantity' : getQuantity($bibliographicalExpressions, 'expression', 'expressions'),
     'author' : getAuthors($bibliography, $lang),
     'copyright' : getCopyright($bibliography, $lang),
-    'description' : 'Liste des expressions de la bibliographie des Guides de Paris, au sens des FRBR',
+    'description' : 'Liste des expressions de la bibliographie des Université de Montréal, au sens des FRBR',
     'keywords' : array{getKeywords($bibliography, $lang)},
     'url' : $carrierAquin.globals:root || '/bibliography/expressions'
     }
@@ -614,7 +614,7 @@ declare function getBibliographicalManifestationsList($queryParams) {
     'quantity' : getQuantity($bibliographicalManifestations, 'manifestation', 'manifestations'),
     'author' : getAuthors($bibliography, $lang),
     'copyright' : getCopyright($bibliography, $lang),
-    'description' : 'Liste des manifestations de la bibliographie des Guides de Paris, au sens des FRBR',
+    'description' : 'Liste des manifestations de la bibliographie des Université de Montréal, au sens des FRBR',
     'keywords' : array{getKeywords($bibliography, $lang)},
     'url' : $carrierAquin.globals:root || '/bibliography/manifestations'
     }
@@ -784,7 +784,7 @@ declare function getSearch($queryParams as map(*)) as map(*) {
     else $primaryResults
   let $meta := map{
     'title' : 'Résultats de la recherche',
-    'author' : 'Guides de Paris',
+    'author' : 'Université de Montréal',
     'referer' : $queryParams?referer,
     'search' : $queryParams?search,
     'start' : $queryParams?start,
@@ -813,14 +813,15 @@ declare function getSearch($queryParams as map(*)) as map(*) {
  : todo suppress @xml:id on search content
  :)
 declare function getSearchExact($queryParams) {
-  let $gdpFtIndex := db:open('gdpFtIndex')
+  let $carrierAquinFt := db:open('carrierAquinFt')
   let $gdp := db:open('carrierAquin')
-  (: for $result score $s in $gdpFtIndex//tei:div[@type="section" or @type="item"]/tei:p :)
+  (: for $result score $s in $carrierAquinFt//tei:div[@type="section" or @type="item"]/tei:p :)
   let $db :=
     if ($queryParams?type = 'none')
-    then db:open('gdpFtIndex')
+    then db:open('carrierAquinFt')
     else db:open('carrierAquin')
-  let $content := if ($queryParams?text = 'all' and $queryParams?type = 'none') then $db//*:p[@xml:id]
+(:  let $content := if ($queryParams?text = 'all' and $queryParams?type = 'none') then $db//*:p[@xml:id]:)
+    let $content := if ($queryParams?text = 'all' and $queryParams?type = 'none') then $db//*:p
     else if ($queryParams?text != 'all' and $queryParams?type = 'none') then $db//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]//*:p[@xml:id]
     else if ($queryParams?text = 'all' and $queryParams?type = 'persons') then $db//*:p[@xml:id]//*:persName
     else if ($queryParams?text = 'all' and $queryParams?type = 'places') then $db//*:p[@xml:id]//*:placeName
@@ -875,11 +876,11 @@ declare function getSearchExact($queryParams) {
 };
 
 declare function getSearchAny($queryParams) {
-  let $gdpFtIndex := db:open('gdpFtIndex')
+  let $carrierAquinFt := db:open('carrierAquinFt')
   let $gdp := db:open('carrierAquin')
   let $texts := if ($queryParams?text = 'all')
-    then db:open('gdpFtIndex')
-    else db:open('gdpFtIndex')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
+    then db:open('carrierAquinFt')
+    else db:open('carrierAquinFt')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
   for $result score $s in $texts//*:p[@xml:id][
     text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}
     any
@@ -920,11 +921,11 @@ declare function getSearchAny($queryParams) {
 };
 
 declare function getSearchAllWord($queryParams) {
-  let $gdpFtIndex := db:open('gdpFtIndex')
+  let $carrierAquinFt := db:open('carrierAquinFt')
   let $gdp := db:open('carrierAquin')
   let $texts := if ($queryParams?text = 'all')
-    then db:open('gdpFtIndex')
-    else db:open('gdpFtIndex')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
+    then db:open('carrierAquinFt')
+    else db:open('carrierAquinFt')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
   for $result score $s in $texts//*:p[@xml:id][
     text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}
     all words
@@ -964,11 +965,11 @@ declare function getSearchAllWord($queryParams) {
 };
 
 declare function getSearchPhrase($queryParams) {
-  let $gdpFtIndex := db:open('gdpFtIndex')
+  let $carrierAquinFt := db:open('carrierAquinFt')
   let $gdp := db:open('carrierAquin')
   let $texts := if ($queryParams?text = 'all')
-    then db:open('gdpFtIndex')
-    else db:open('gdpFtIndex')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
+    then db:open('carrierAquinFt')
+    else db:open('carrierAquinFt')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
   for $result score $s in $texts//*:p[@xml:id][
     text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}
     phrase
@@ -1009,12 +1010,12 @@ declare function getSearchPhrase($queryParams) {
 };
 
 declare function getSearchAll($queryParams) {
-  let $gdpFtIndex := db:open('gdpFtIndex')
+  let $carrierAquinFt := db:open('carrierAquinFt')
   let $gdp := db:open('carrierAquin')
   let $texts := if ($queryParams?text = 'all')
-    then db:open('gdpFtIndex')
-    else db:open('gdpFtIndex')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
-  for $result score $s in $texts//*:p[@xml:id][
+    then db:open('carrierAquinFt')
+    else db:open('carrierAquinFt')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
+  for $result score $s in $texts//*:p[
     text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}
     all
     using case insensitive
@@ -1022,24 +1023,12 @@ declare function getSearchAll($queryParams) {
     using stemming
     using fuzzy
     ]
-  (:let $textId := getTextId($result):)
-  (: todo check the use of ancestor::tei:div/@xml:id instead of parent::*/@xml:id :)
-  group by $uuid := $result/ancestor::tei:div[1]/@xml:id
-  let $uuid := $result/ancestor::tei:div[1]/@xml:id
-  let $segment := $gdp//*[@xml:id=$uuid]
-  let $textId := getTextIdWithRegex($segment)
-  let $date := fn:substring($textId, fn:string-length($textId) - 3)
-  let $title := getSectionTitle($segment)
-  let $size := getWordsCount($segment, map{})
   let $score := fn:sum($s)
   order by
-    if ($queryParams?sort = 'size') then $size?quantity else () descending,
-    if ($queryParams?sort = 'title') then fn:string-join($title, ' ') else () ascending,
-    if ($queryParams?sort = 'date') then $date else () ascending,
     if ($queryParams?sort = 'score') then $score else () descending
   return map {
-    'title' : $title,
-    'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
+
+    'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),(:,
     'textId' : $textId,
     'date' : $date,
     'score' : $score,
@@ -1048,7 +1037,7 @@ declare function getSearchAll($queryParams) {
     'size' : $size,
     'uuid' : $uuid => xs:string(),
     'path' : '/items/',
-    'url' : $carrierAquin.globals:root || '/items/' || $uuid,
+    'url' : $carrierAquin.globals:root || '/items/' || $uuid,:)
     'combining' : 'all'
   }
 };
@@ -1076,7 +1065,7 @@ declare function getIndexList($queryParams as map(*)) as map(*) {
   let $data := (synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexNominum'], synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexLocorum'], synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexOperum'])
   let $meta := map{
     'title' : 'Liste des index',
-    'author' : 'Guides de Paris',
+    'author' : 'Université de Montréal',
     'quantity' : getQuantity($data, 'index', 'index')
     }
   let $content := 
@@ -1143,7 +1132,7 @@ declare function getIndexLocorumItem($queryParams as map(*)) as map(*) {
   let $entry := $db//tei:place[@xml:id = $itemId]
   let $meta := map{
     'rubrique' : 'Entrée de l’index de lieux',
-    'author' : 'Guides de Paris',
+    'author' : 'Université de Montréal',
     'quantity' : getQuantity($entry, 'occurence', 'occurences')
     }
   let $uuid := $entry/@xml:id
@@ -1192,7 +1181,7 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
     else $data
   let $meta := map{
     'title' : 'Index des personnes',
-    'author' : 'Guides de Paris',
+    'author' : 'Université de Montréal',
     'quantity' : getQuantity($results, 'entrée', 'entrées'),
     'text' : $queryParams?text,
     'start' : $queryParams?start,
@@ -1237,7 +1226,7 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
   let $entry := $db//tei:listPerson/tei:person[@xml:id = $itemId]
   let $meta := map{
     'rubrique' : 'Entrée d’index des personnes',
-    'author' : 'Guides de Paris',
+    'author' : 'Université de Montréal',
     'quantity' : getQuantity($entry, 'occurence', 'occurences')
     }
   let $uuid := $entry/@xml:id
@@ -1291,7 +1280,7 @@ declare function getIndexOperum($queryParams as map(*)) as map(*) {
     else $data
   let $meta := map{
     'title' : 'Index des œuvres',
-    'author' : 'Guides de Paris',
+    'author' : 'Université de Montréal',
     'quantity' : getQuantity($results, 'entrée', 'entrées'),
     'text' : $queryParams?text,
     'start' : $queryParams?start,
@@ -1333,7 +1322,7 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
   let $occurences := $entry/tei:relation[@type="locus"]
   let $meta := map{
     'rubrique' : 'Entrée de l’index des œuvres',
-    'author' : 'Guides de Paris',
+    'author' : 'Université de Montréal',
     'title' : $entry/tei:objectName[1],
     'type' : $entry//tei:type/tei:label,
     'date' : $entry/tei:creation/tei:date,
@@ -1417,4 +1406,79 @@ declare function getFilteredResults($primaryResults as map(*)*, $queryParams as 
     (: then $result?indexes?objects?uuid = $queryParams?filterobjects :)
     else fn:true()
   return $result
+};
+
+(:~
+ : This function returns a deep copy of the elements and all sub-elements
+ : (identity transform with typeswitch)
+ : copies the input to the output without modification
+ : @source http://en.wikibooks.org/wiki/XQuery/Typeswitch_Transformations
+ : @todo treat the lists, labels, titles, fw, pb, etc.
+ :)
+declare
+  %output:indent('no')
+function getCarrierAquinFt($items as item()*) as item()* {
+  for $node in $items return typeswitch($node)
+  case text() return $node[fn:normalize-space(.)!='']
+  case comment() return ()
+  case element(tei:persName) return $node ! getCarrierAquinFt(./node())
+  case element(tei:placeName) return $node ! getCarrierAquinFt(./node())
+  case element(tei:objectName) return $node ! getCarrierAquinFt(./node())
+  case element(tei:orgName) return $node ! getCarrierAquinFt(./node())
+  case element(tei:geogName) return $node ! getCarrierAquinFt(./node())
+
+  case element(tei:hi) return $node ! getCarrierAquinFt(./node())
+  case element(tei:label) return $node ! getCarrierAquinFt(./node())
+
+  case element(tei:fw) return ()
+  case element(tei:pb) return ()
+  case element(tei:del) return () (: @todo index del content :)
+
+  case element(tei:item) return $node ! (' ', getCarrierAquinFt(./node()))
+  case element(tei:list) return $node ! getCarrierAquinFt(./node())
+  case element(tei:l) return $node ! getCarrierAquinFt(./node())
+  case element(tei:lg) return $node ! getCarrierAquinFt(./node())
+
+  case element(tei:lb) return (' ') (: @todo deal with cesures :)
+  case element(tei:q) return $node ! getCarrierAquinFt(./node())
+  case element(tei:quote) return $node ! getCarrierAquinFt(./node())
+  case element(tei:ref) return $node ! getCarrierAquinFt(./node())
+  case element(tei:rs) return $node ! getCarrierAquinFt(./node())
+  case element(tei:seg) return $node ! getCarrierAquinFt(./node())
+  case element(tei:sic) return $node ! getCarrierAquinFt(./node())
+  case element(tei:soCalled) return $node ! getCarrierAquinFt(./node())
+  case element(tei:supplied) return $node ! getCarrierAquinFt(./node())
+  case element(tei:title) return $node ! getCarrierAquinFt(./node())
+  case element(tei:unclear) return $node ! getCarrierAquinFt(./node())
+  case element(tei:metamark) return ()
+
+  case element(tei:abbr) return $node ! getCarrierAquinFt(./node())
+  case element(tei:bibl) return $node ! getCarrierAquinFt(./node())
+  case element(tei:date) return $node ! getCarrierAquinFt(./node())
+  case element(tei:emph) return $node ! getCarrierAquinFt(./node())
+  case element(tei:expan) return $node ! getCarrierAquinFt(./node())
+  case element(tei:foreign) return $node ! getCarrierAquinFt(./node())
+  case element(tei:geo) return $node ! getCarrierAquinFt(./node())
+  case element(tei:num) return $node ! (' ', getCarrierAquinFt(./node()))
+  case element(tei:space) return ()
+
+  case element() return element {fn:name($node)} {
+    namespace {"tei"} { "http://www.tei-c.org/ns/1.0" },
+    (: output each attribute in this element :)
+    for $att in $node/@*
+    return
+      attribute {fn:name($att)} {$att} ,
+    (: output all the sub-elements of this element recursively :)
+    $node ! getCarrierAquinFt(./node())
+  }
+  (: otherwise pass it through.  Used for text(), comments, and PIs :)
+  default return $node
+};
+
+declare
+  %updating
+function createCarrierAquinFt() {
+  let $db := db:open('carrierAquin')/tei:teiCorpus
+  (: return getCarrierAquinFt($db) :)
+  return db:create('carrierAquinFt', getCarrierAquinFt($db), 'carrierAquinFt')
 };
